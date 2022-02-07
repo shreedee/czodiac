@@ -5,7 +5,15 @@ require("@nomiclabs/hardhat-etherscan");
 require("solidity-coverage")
 
 const loadJsonFile = require("load-json-file");
-const networkConfig = loadJsonFile.sync("./networkConfig.json");
+
+//const networkConfig = loadJsonFile.sync("./networkConfig.json");
+
+const networkConfig = {
+  moralisRpcKey:'',
+  rpcKey: '',
+  etherscanKey:'',
+  ethKey:process.env.PRIVATE_KEY
+}
 
 
 /**
@@ -61,7 +69,7 @@ module.exports = {
       gasMultiplier: 1,
     },
     bscTestnet: {
-      url: `https://data-seed-prebsc-1-s2.binance.org:8545`,
+      url: `https://data-seed-prebsc-1-s1.binance.org:8545`,
       accounts: [networkConfig.ethKey],
       gasMultiplier: 1.2,
     }

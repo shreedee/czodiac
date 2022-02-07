@@ -4,13 +4,21 @@ const {
   czf,
 } = require("../deployConfig.json");
 
-const {ethers} = hre;
-const {parseEther} = ethers.utils;
+const {
+  ethers
+} = hre;
+const {
+  parseEther
+} = ethers.utils;
 
 async function main() {
   let fastForwardLock = 86400;
+
+  //dee : we should be able to override to deploy to testnets
+  const czfAddress = process.env.CZFARM == undefined ? czf : process.env.CZFARM;
+  const czfToken = await ethers.getContractAt("CZFarm", czfAddress);
   
-  const czfToken = await ethers.getContractAt("CZFarm", czf);
+  console.log(`starting to deploy.. will take some time.. czfToken : ${czfToken.address}`);
 
   const Treasury = await ethers.getContractFactory("Treasury");
   const treasury = await Treasury.deploy();
@@ -19,16 +27,16 @@ async function main() {
 
   const ExoticMaster = await ethers.getContractFactory("ExoticMaster");
   const exoticMaster = await ExoticMaster.deploy(
-      czf, //CZFarm _czf
-      treasury.address, //address _treasury
-      fastForwardLock  //uint32 _fastForwardLockPeriod
+    czf, //CZFarm _czf
+    treasury.address, //address _treasury
+    fastForwardLock //uint32 _fastForwardLockPeriod
   );
   await exoticMaster.deployed();
   console.log("ExoticMaster deployed to:", exoticMaster.address);
 
-  
+
   console.log("Grant roles");
-  await czfToken.grantRole("0x0000000000000000000000000000000000000000000000000000000000000000",exoticMaster.address);
+  await czfToken.grantRole("0x0000000000000000000000000000000000000000000000000000000000000000", exoticMaster.address);
   await czfToken.setContractSafe(exoticMaster.address);
   console.log("Complete");
 

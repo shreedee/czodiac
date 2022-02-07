@@ -9,6 +9,8 @@ async function main() {
   const CZFarmMaster = await ethers.getContractFactory("CZFarmMaster");
   const CZFarmPoolFactory = await ethers.getContractFactory("CZFarmPoolFactory");
 
+  console.log('starting to deploy.. will take some time');
+
   const czFarm = await CZFarm.deploy();
   await czFarm.deployed();
   console.log("CZFarm deployed to:", czFarm.address);

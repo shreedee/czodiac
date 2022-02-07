@@ -8,7 +8,12 @@ const {ethers} = hre;
 const {parseEther} = ethers.utils;
 
 async function main() {
-  const czfToken = await ethers.getContractAt("CZFarm", czf);
+
+  //dee : we should be able to override to deploy to testnets
+  const czfAddress = process.env.CZFARM == undefined?czf:process.env.CZFARM;
+  const czfToken = await ethers.getContractAt("CZFarm", czfAddress);
+
+  console.log(`starting to deploy.. will take some time.. czfToken : ${czfToken.address}`);
 
   const ChronoPoolService = await ethers.getContractFactory("ChronoPoolService");
   const chronoPoolService = await ChronoPoolService.deploy(
