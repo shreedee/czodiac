@@ -7,7 +7,8 @@ const {
 const {ethers} = hre;
 const {parseEther} = ethers.utils;
 
-const lpAddr = "0xAAC96d00C566571bafdfa3B8440Bdc3cDB223Ad0";
+const lpAddr = process.env.LPADDRESS == undefined?"0xAAC96d00C566571bafdfa3B8440Bdc3cDB223Ad0":process.env.LPADDRESS;
+
 const eRate = parseEther("1000");
 const farms = [
   {
@@ -27,12 +28,18 @@ const farms = [
   }
 ]
 
+//set LPADDRESS=XXXXXXXXXXXX optional
+//set EXOTICMASTER=XXXXXXXXXXXXXXXXX optional
+//npx hardhat run --network bscTestnet scripts/add-ExoticFarm.js
+
 async function main() {
   let fastForwardLock = 86400;
-  
-  const exoticMaster = await ethers.getContractAt("ExoticMaster", exoticMasterAddr);
 
-  console.log("Add LP...");
+  const exoticMasterAddressToUse = process.env.EXOTICMASTER == undefined?exoticMasterAddr:process.env.EXOTICMASTER;
+  
+  const exoticMaster = await ethers.getContractAt("ExoticMaster", exoticMasterAddressToUse);
+
+  console.log(`Add LP...exoticMaster=${exoticMaster.address}, lp=${lpAddr}`);
   await exoticMaster.setLpBaseEmissionRate(lpAddr,eRate);
   await delay(5000);
   console.log("Add farms (",farms.length,")...");
